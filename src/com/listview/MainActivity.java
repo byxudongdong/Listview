@@ -68,7 +68,9 @@ public class MainActivity extends Activity {
           Map<String, Object> map;
           switch (aItem.getItemId()) {
                case 0:
-            	 data.remove(this);
+            	 data.removeAll(data);
+                 adapter.notifyDataSetChanged();
+                 lv.invalidate();
               	 Toast.makeText(MainActivity.this, "你点击了条目一",Toast.LENGTH_SHORT).show();
               	 return true;
                case 1:
@@ -76,7 +78,6 @@ public class MainActivity extends Activity {
                    map.put("img", R.drawable.ic_launcher);
                    map.put("title", "跆拳道" + "add");
                    map.put("info", "快乐源于生活..." + "add");
-                   //data.add(map);
                    data.add(0,map);
                    adapter.notifyDataSetChanged();
                    lv.invalidate();
@@ -84,6 +85,8 @@ public class MainActivity extends Activity {
               	 return true;
                case 2:
             	   data.remove(0);
+            	   adapter.notifyDataSetChanged();
+                   lv.invalidate();
               	 Toast.makeText(MainActivity.this, "你点击了条目三",Toast.LENGTH_SHORT).show();
               	 return true;
           }
@@ -94,7 +97,7 @@ public class MainActivity extends Activity {
     {
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         Map<String, Object> map;
-        for(int i=0;i<50000;i++)
+        for(int i=0;i<88;i++)
         {
             map = new HashMap<String, Object>();
             map.put("img", R.drawable.ic_launcher);
