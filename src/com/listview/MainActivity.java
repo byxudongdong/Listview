@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.R.integer;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -25,6 +27,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class MainActivity extends Activity {
     private ListView lv;
     private List<Map<String, Object>> data;
+    MyAdapter adapter;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +35,7 @@ public class MainActivity extends Activity {
         lv = (ListView)this.findViewById(R.id.lv);
         //获取将要绑定的数据设置到data中
         data = getData();
-        MyAdapter adapter = new MyAdapter(this);
+        adapter = new MyAdapter(this);
         lv.setAdapter(adapter);
         
       //处理Item的点击事件
@@ -44,7 +47,7 @@ public class MainActivity extends Activity {
         		String infoDetails = (String) getObject.get("info");	//获取信息详情
         		
         		//Toast显示测试
-        		Toast.makeText(MainActivity.this, "信息ID:"+position,Toast.LENGTH_SHORT).show();
+        		Toast.makeText(MainActivity.this, "信息ID:"+position+infoTitle,Toast.LENGTH_SHORT).show();
         	}
         });
         
@@ -62,14 +65,25 @@ public class MainActivity extends Activity {
   //长按菜单处理函数
   	public boolean onContextItemSelected(MenuItem aItem) {
           AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)aItem.getMenuInfo();
+          Map<String, Object> map;
           switch (aItem.getItemId()) {
                case 0:
+            	 data.remove(this);
               	 Toast.makeText(MainActivity.this, "你点击了条目一",Toast.LENGTH_SHORT).show();
               	 return true;
                case 1:
+            	   map = new HashMap<String, Object>();
+                   map.put("img", R.drawable.ic_launcher);
+                   map.put("title", "跆拳道" + "add");
+                   map.put("info", "快乐源于生活..." + "add");
+                   //data.add(map);
+                   data.add(0,map);
+                   adapter.notifyDataSetChanged();
+                   lv.invalidate();
               	 Toast.makeText(MainActivity.this, "你点击了条目二",Toast.LENGTH_SHORT).show();            
               	 return true;
                case 2:
+            	   data.remove(0);
               	 Toast.makeText(MainActivity.this, "你点击了条目三",Toast.LENGTH_SHORT).show();
               	 return true;
           }
@@ -128,6 +142,7 @@ public class MainActivity extends Activity {
                                                         
         //Get a View that displays the data at the specified position in the data set.
         //获取一个在数据集中指定索引的视图来显示数据
+        public int counter=0;
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder holder = null;
@@ -149,7 +164,7 @@ public class MainActivity extends Activity {
             holder.img.setBackgroundResource((Integer)data.get(position).get("img"));
             holder.title.setText((String)data.get(position).get("title"));
             holder.info.setText((String)data.get(position).get("info"));
-                                                            
+            Log.i("Count", String.valueOf(counter ++));                                                
             return convertView;
         }
                                                         
