@@ -13,6 +13,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	private static final int VERSION = 1;
 	//在SQLiteOepnHelper的子类当中，必须有该构造函数
+    /**
+     *  context:上下文对象
+     *  name:数据库名
+     */
 	public DatabaseHelper(Context context, String name, CursorFactory factory,
 			int version) {
 		//必须通过super调用父类当中的构造函数
@@ -32,7 +36,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		// TODO Auto-generated method stub
 		System.out.println("create a Database");
 		//execSQL函数用于执行SQL语句
-		db.execSQL("create table user(id int,name varchar(20))");
+		//db.execSQL("create table user(id int,name varchar(20))");
+		 //建表
+        db.execSQL("create table if not exists userTb (" +
+                "_id integer primary key," +
+                "name text not null,age integer not null," +
+                "sex text not null)");
 	}
 
 	@Override

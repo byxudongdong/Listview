@@ -7,7 +7,6 @@ import java.util.Map;
 
 import com.sqlite.DatabaseHelper;
 
-import android.R.integer;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
