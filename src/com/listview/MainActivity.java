@@ -5,9 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sqlite.DatabaseHelper;
+
 import android.R.integer;
 import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -25,6 +29,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 public class MainActivity extends Activity {
+	
+	DatabaseHelper dbsqlite;
+	private SQLiteDatabase  db = null;
+	private Cursor cursor = null;    
+    //private SimpleCursorAdapter adapter = null;
+    
     private ListView lv;
     private List<Map<String, Object>> data;
     MyAdapter adapter;
@@ -38,7 +48,42 @@ public class MainActivity extends Activity {
         adapter = new MyAdapter(this);
         lv.setAdapter(adapter);
         
-      //处理Item的点击事件
+        //每个程序都有自己的数据库
+        //通过openOrCreateDatabase来打开或创建一个数据库,返回SQLiteDatabase对象
+        /**
+         *  openOrCreateDatabase(String name,int mode,SQLiteDatabase.CursorFactory factory)
+         *  name: 数据库名
+         *  mode: 数据库权限，MODE_PRIVATE为本应用程序私有，MODE_WORLD_READABLE和MODE_WORLD_WRITEABLE分别为全局可读和可写。
+         *  factory: 可以用来实例化一个cusor对象的工厂类
+         */
+        db = openOrCreateDatabase("user.db",MODE_PRIVATE,null);
+        //创建一个表
+        db.execSQL("create table if not exists userTb (" +
+                    "_id integer primary key," +
+                    "name text not null,age integer not null," +
+                    "sex text not null)");
+        //向表中插入记录
+        db.execSQL("insert into userTb (name,age,sex) values ('张三',18,'女')");
+        db.execSQL("insert into userTb (name,age,sex) values ('李四',19,'男')");
+        db.execSQL("insert into userTb (name,age,sex) values ('王五',20,'女')");
+        //dbsqlite.getWritableDatabase();
+        //db= (new dbsqlite(getApplicationContext())).getWritableDatabase();    
+        //Cursor为查询结果对象，类似于JDBC中的ResultSet
+        Cursor queryResult = db.rawQuery("select * from userTb", null);
+        if (queryResult != null) {
+            while (queryResult.moveToNext()) {
+                Log.i("info", "id: " + queryResult.getInt(queryResult.getColumnIndex("_id"))
+                          + " 姓名: " + queryResult.getString(queryResult.getColumnIndex("name"))
+                          + " 年龄: " + queryResult.getInt(queryResult.getColumnIndex("age"))
+                          + " 性别: " + queryResult.getString(queryResult.getColumnIndex("sex")));
+            }
+            //关闭游标对象
+            queryResult.close();
+        }
+        //关闭数据库
+        db.close();
+        
+        //处理Item的点击事件
         lv.setOnItemClickListener(new OnItemClickListener(){
         	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         		Map<String, Object> getObject = data.get(position);	//通过position获取所点击的对象
